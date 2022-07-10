@@ -2,10 +2,9 @@ import { NextFunction, Request, Response } from "express";
 
 export default function errorHandler (error, req : Request, res: Response, next: NextFunction){
 
-    console.log(error);
-    if (error.response){
-        return res.sendStatus(error.response.status);
+    if (error.type){
+        return res.status(error.statusCode).send(error.message);
     }
 
-    res.sendStatus(500);
+    res.status(500).send('Houve algum problema na aplicação, por favor tente novamente.');
 }
