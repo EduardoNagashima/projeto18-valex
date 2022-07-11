@@ -53,7 +53,7 @@ const formattedName = (employee: Employee) =>{
             cardholderName += fullNameArray[i].toUpperCase()[0] + ' ';
         }
     }
-    return cardholderName
+    return cardholderName.trim();
 }
 
 export default createCard;
