@@ -9,8 +9,9 @@ export default async function paymentService({cardId, password, businessId, valu
     const card = await cardValidationById(cardId);
     await cardValidationByDate(card);
     if (card.isBlocked) throw {type: 'card_blocked', message: "Cartão bloqueado", statusCode: 401};
+    if (!card.password) throw {type: 'invalid_card_error', message: "Cartão ainda não está ativo", statusCode: 401};
 
-    const confirmPassword = bcrypt.compareSync(password, card.password);
+    const confirmPassword = bcrypt.compareSync(password.toString(), card.password);
     if (!confirmPassword) throw {type: 'invalid_password', message: "Senha incorreta", statusCode: 403};
 
     const business = await businessRepository.findById(businessId);
@@ -20,6 +21,5 @@ export default async function paymentService({cardId, password, businessId, valu
 
     const balance = await getBalanceService(card);
     if (balance.balance < value) throw {type: 'insufficient_balance', message: "Saldo Insuficiente", statusCode: 403};
-    console.log(balance.balance)
     await payment.insert({cardId, businessId, amount: value});
 }

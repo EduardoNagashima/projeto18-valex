@@ -1,12 +1,13 @@
 import Cryptr from "cryptr";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import dotenv from "dotenv";
 import { findByTypeAndEmployeeId } from "../repositories/cardRepository.js";
 import { TransactionTypes } from "./../repositories/cardRepository.js";
 import * as cardRepository from "./../repositories/cardRepository.js";
-import { findByApiKey } from "../repositories/companyRepository.js";
 import { findById } from "./../repositories/employeeRepository.js";
 import numbersGenerator from "../utils/numbersGenerator.js";
 import { Employee } from "./../repositories/employeeRepository.js";
+dotenv.config();
 
 export async function createCard(employeeId: number, type: TransactionTypes){
     const employee = await findById(employeeId);
@@ -19,7 +20,7 @@ export async function createCard(employeeId: number, type: TransactionTypes){
     const cardholderName = formattedName(employee)
     const expirationDate = dayjs().add(2, 'year').format('MM/YY');
     const CVC = numbersGenerator(3);
-    const cryptr = new Cryptr(employee.fullName);
+    const cryptr = new Cryptr(process.env.SC);
     const securityCode = cryptr.encrypt(CVC);
     
     const cardData = {
@@ -34,7 +35,6 @@ export async function createCard(employeeId: number, type: TransactionTypes){
     isBlocked: false,
     type,
   }
-
     cardRepository.insert(cardData);
 }
 

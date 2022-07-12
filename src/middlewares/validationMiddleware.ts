@@ -21,10 +21,10 @@ export function paymentValidation(req: Request, res: Response, next: NextFunctio
 }
 
 export function activateCardValidation(req: Request, res: Response, next: NextFunction) {
-    const { number, cardholderName, expirationDate, cvc, password } = req.body;
-    const { error } = activateCardSchema.validate({ number, cardholderName, expirationDate, cvc, password });
+    const { cvc, password } = req.body;
+    const { error } = activateCardSchema.validate({ cvc, password });
     if (error) throw { type: 'body_error', message: error.details, statusCode: 422 }
-    res.locals = { number, cardholderName, expirationDate, cvc, password };
+    res.locals = {...res.locals, cvc, password };
     next();
 }
 

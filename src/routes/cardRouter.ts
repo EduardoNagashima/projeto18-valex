@@ -8,8 +8,7 @@ import unlockCard from "../controllers/unlockCardController.js";
 
 const cardRouter = Router();
 cardRouter.post('/card/new', companyApiValidation, newCardValidation, newCard);
-cardRouter.post('/card/activate', activateCardValidation, activateCard);
-//FIXME FAZER O BALANCO
+cardRouter.post('/card/:id/activate', cardValidationByParamsId, activateCardValidation, activateCard);
 cardRouter.get('/card/:id/balance', cardValidationByParamsId, getBalance);
 cardRouter.post('/card/:id/lock', cardValidationByParamsId, lockCard);
 cardRouter.post('/card/:id/unlock', cardValidationByParamsId, unlockCard);

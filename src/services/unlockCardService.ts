@@ -6,8 +6,8 @@ export default async function unlockCardService(card : cardRepository.Card, pass
     cardValidationByDate(card);
     if (!card.isBlocked) throw {type:'card_blocked', message: 'Cartão já está desbloqueado', statusCode:403};
 
-    const comparePasswords = bcrypt.compareSync(password, card.password);
+    const comparePasswords = bcrypt.compareSync(password.toString(), card.password);
     if (!comparePasswords) throw {type: 'wrong_password', message: 'Senha incorreta', statusCode: 401};
-
+    //test
     await cardRepository.update(card.id, {isBlocked: false});
 }
