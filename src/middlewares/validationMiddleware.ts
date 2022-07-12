@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Card, findById } from "../repositories/cardRepository.js";
 import { activateCardSchema, cardTypeSchema } from "../utils/schemas.js";
 import dayjs from "dayjs";
+import { findByApiKey } from "../repositories/companyRepository.js";
 
 export function newCardValidation(req: Request, res: Response, next: NextFunction){
     const {employeeId, type} : {employeeId: number, type: string } = req.body;
@@ -27,13 +28,20 @@ export function activateCardValidation(req: Request, res: Response, next: NextFu
 export async function cardValidationById(req: Request, res: Response, next: NextFunction){
     const {id} = req.params;
     const card : Card = await findById(parseInt(id));
-    if (!card) throw {type: 'not_find_error', message: 'cartão inválido ou não encontrado', statusCode: 404};
+    if (!card) throw {type: 'not_found_error', message: 'cartão inválido ou não encontrado', statusCode: 404};
     
     res.locals = { card };
     next();
 }
 
-export async function cardValidationByDate(card: Card) {
+export function cardValidationByDate(card: Card) {
     const currentDate = dayjs().format("MM/YY");
     if (currentDate > card.expirationDate) throw {type: "invalid_date", message: 'Cartão expirado', statusCode: 401};
+}
+
+export async function companyApiValidation(req: Request, res: Response, next: NextFunction) {
+    const apikey = req.headers["x-api-key"];
+    const company = await findByApiKey(apikey);
+    if (!company) throw {type: "not_found_error", message: 'Empresa não encontrada', statusCode: 404}
+    next();
 }

@@ -8,10 +8,7 @@ import { findById } from "./../repositories/employeeRepository.js";
 import numbersGenerator from "../utils/numbersGenerator.js";
 import { Employee } from "./../repositories/employeeRepository.js";
 
-export async function createCard(employeeId: number, type: TransactionTypes, apiKey: any){
-    const companyAPI = await findByApiKey(apiKey);
-    if (!companyAPI) throw {type: "not_find_error", message: 'Empresa não encontrada.', statusCode: 404};
-
+export async function createCard(employeeId: number, type: TransactionTypes){
     const employee = await findById(employeeId);
     if (!employee) throw {type: "not_find_error", message: 'Colaborador não encontrado.', statusCode: 404};
 
