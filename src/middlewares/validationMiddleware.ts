@@ -34,9 +34,13 @@ export async function cardValidationById(req: Request, res: Response, next: Next
     next();
 }
 
-export function cardValidationByDate(card: Card) {
+export async function cardValidationByDate(card: Card) {
     const currentDate = dayjs().format("MM/YY");
-    if (currentDate > card.expirationDate) throw {type: "invalid_date", message: 'Cartão expirado', statusCode: 401};
+    const [mouth, year] = currentDate.split('/');
+    const [cardMouth, cardYear] = card.expirationDate.split('/');
+    const parseCurrentDate = new Date(parseInt(year), parseInt(mouth), 0);
+    const parseCardDate = new Date(parseInt(cardYear), parseInt(cardMouth), 0);
+    if (parseCurrentDate > parseCardDate) throw {type: "invalid_date", message: 'Cartão expirado', statusCode: 401};
 }
 
 export async function companyApiValidation(req: Request, res: Response, next: NextFunction) {
