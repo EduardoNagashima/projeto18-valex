@@ -11,4 +11,4 @@ export const activateCardSchema : Schema = joi.object({
   expirationDate: joi.string().required(),
   cvc: joi.string().length(3).required(),
   password: joi.string().length(4).required()
-})
+});
